@@ -31,13 +31,13 @@ export function StockBoard({ stocks }: { stocks: StockRow[] }) {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search · 搜索代号 / 名称 / 地址"
+            placeholder="Search"
             aria-label="Search quote tokens"
           />
         </label>
         <div className="chips" role="group" aria-label="Filter by issuer">
           <button type="button" className={issuer === 'all' ? 'chip on' : 'chip'} aria-pressed={issuer === 'all'} onClick={() => setIssuer('all')}>
-            All <span lang="zh-CN">全部</span>
+            All
           </button>
           {issuers.map((name) => (
             <button key={name} type="button" className={issuer === name ? 'chip on' : 'chip'} aria-pressed={issuer === name} onClick={() => setIssuer(name)}>
@@ -49,20 +49,17 @@ export function StockBoard({ stocks }: { stocks: StockRow[] }) {
       </div>
 
       {rows.length === 0 ? (
-        <div className="empty compact">
-          <h3>No matching quotes</h3>
-          <p lang="zh-CN">没有匹配的报价代币</p>
-        </div>
+        <p className="empty">No matches.</p>
       ) : (
-        <div className="table-wrap card">
+        <div className="table-wrap">
           <table className="stock-table">
             <caption className="sr">Allowlisted stock quote tokens</caption>
             <thead>
               <tr>
-                <th scope="col">Symbol <span lang="zh-CN">代号</span></th>
-                <th scope="col">Asset <span lang="zh-CN">资产</span></th>
-                <th scope="col">Issuer <span lang="zh-CN">发行方</span></th>
-                <th scope="col">Address <span lang="zh-CN">地址</span></th>
+                <th scope="col">Symbol</th>
+                <th scope="col">Asset</th>
+                <th scope="col">Issuer</th>
+                <th scope="col">Address</th>
               </tr>
             </thead>
             <tbody>
