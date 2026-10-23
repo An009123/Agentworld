@@ -166,12 +166,6 @@ baw contract-call execute --requestId <id> --json`}</pre>
             }))}
           />
         </Fold>
-
-        <footer>
-          <p>
-            Flap Portal {FLAP.portal} · Agent ID registry {AGENT_ID_REGISTRY} · Standard impl {FLAP.standardTokenV3Impl} · Tax impl {FLAP.taxTokenV3Impl}. Not financial advice.
-          </p>
-        </footer>
       </main>
     </>
   );
