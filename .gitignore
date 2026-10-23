@@ -1,0 +1,20 @@
+node_modules
+.next
+out
+cache
+
+contracts/out
+contracts/cache
+contracts/broadcast
+broadcast
+
+.uploads
+
+.env
+.env.*
+
+# Foundry libs. forge-std and openzeppelin-contracts are submodules; other
+# installs under contracts/lib stay untracked.
+contracts/lib/*
+!contracts/lib/forge-std
+!contracts/lib/openzeppelin-contracts
