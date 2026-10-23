@@ -5,11 +5,11 @@ import { fmtTime, shortAddr } from './format';
 import { StockBadge } from './stock-badge';
 import { TokenImage } from './token-image';
 
-const STATUS: Record<number, { en: string; zh: string; tone: string }> = {
-  1: { en: 'bonding curve', zh: '曲线中', tone: 'gold' },
-  2: { en: 'dex pending', zh: '待上 DEX', tone: '' },
-  3: { en: 'migrating', zh: '迁移中', tone: 'gold' },
-  4: { en: 'on DEX', zh: '已上 DEX', tone: 'green' },
+const STATUS: Record<number, { en: string; tone: string }> = {
+  1: { en: 'bonding curve', tone: 'gold' },
+  2: { en: 'dex pending', tone: '' },
+  3: { en: 'migrating', tone: 'gold' },
+  4: { en: 'on DEX', tone: 'green' },
 };
 
 export function LaunchCard({ launch, sample = false }: { launch: LaunchView; sample?: boolean }) {
@@ -17,10 +17,9 @@ export function LaunchCard({ launch, sample = false }: { launch: LaunchView; sam
   const hasProgress = typeof launch.progress === 'number' && !Number.isNaN(launch.progress);
   const pct = hasProgress ? Math.max(0, Math.min(100, Math.round(launch.progress! * 100))) : 0;
   const typeLabel = launch.kind === 'tax'
-    ? `Tax token ${(launch.buyTax ?? 0) / 100}% / ${(launch.sellTax ?? 0) / 100}%`
-    : 'Standard (V3, holder dividends in quote)';
+    ? `Tax ${(launch.buyTax ?? 0) / 100}% / ${(launch.sellTax ?? 0) / 100}%`
+    : 'Standard';
   const devBuy = Number(launch.devBuy) > 0 ? `${launch.devBuy} ${launch.quoteSymbol}` : 'none';
-  const statusText = status ? `${status.en} · ${status.zh}` : '—';
 
   return (
     <article className="card launch">
@@ -30,22 +29,22 @@ export function LaunchCard({ launch, sample = false }: { launch: LaunchView; sam
           <div className="name-row">
             <h3 className="tok-title">{launch.name} <span className="sym">${launch.symbol}</span></h3>
             <span className="pair-pill">
-              <StockBadge symbol={launch.quoteSymbol} size={20} />
+              <StockBadge symbol={launch.quoteSymbol} size={18} />
               {launch.quoteSymbol}
             </span>
           </div>
-          <p className="desc">{launch.description || '—'}</p>
+          {launch.description ? <p className="desc">{launch.description}</p> : null}
         </div>
       </div>
 
-      <div className="progress" aria-hidden={!hasProgress}>
+      <div className="progress">
         <div className="track"><span className="fill" style={{ width: `${pct}%` }} /></div>
         <span className="pct">{hasProgress ? `${pct}%` : '—'}</span>
       </div>
 
       <dl className="meta">
         <div>
-          <dt>Agent <span lang="zh-CN">发射者</span></dt>
+          <dt>Agent</dt>
           <dd>
             <b className="handle">{launch.agentHandle}.ai</b>
             {' · '}
@@ -53,24 +52,21 @@ export function LaunchCard({ launch, sample = false }: { launch: LaunchView; sam
           </dd>
         </div>
         <div>
-          <dt>Pair <span lang="zh-CN">交易对</span></dt>
-          <dd>
-            <span className="pair-inline"><StockBadge symbol={launch.quoteSymbol} size={16} />{launch.symbol} / {launch.quoteSymbol}</span>
-            {launch.quoteName ? <span className="muted"> ({launch.quoteName})</span> : null}
-          </dd>
+          <dt>Pair</dt>
+          <dd>{launch.symbol} / {launch.quoteSymbol}{launch.quoteName ? <span className="muted"> · {launch.quoteName}</span> : null}</dd>
         </div>
         <div>
-          <dt>Type <span lang="zh-CN">类型</span></dt>
+          <dt>Type</dt>
           <dd>{typeLabel}</dd>
         </div>
         <div>
-          <dt>Dev buy <span lang="zh-CN">开发买入</span></dt>
+          <dt>Dev buy</dt>
           <dd>{devBuy}</dd>
         </div>
         <div>
-          <dt>Status <span lang="zh-CN">状态</span></dt>
+          <dt>Status</dt>
           <dd className={status?.tone === 'green' ? 'ok' : status?.tone === 'gold' ? 'hot' : undefined}>
-            {statusText}
+            {status?.en || '—'}
             <span className="when">{fmtTime(launch.timestamp)}</span>
           </dd>
         </div>
@@ -78,16 +74,13 @@ export function LaunchCard({ launch, sample = false }: { launch: LaunchView; sam
 
       <div className="links">
         {sample ? (
-          <>
-            <span className="link-btn is-disabled">BscScan ↗</span>
-            <span className="link-btn is-disabled">Flap ↗</span>
-          </>
+          <span className="is-disabled">BscScan · Flap</span>
         ) : (
           <>
-            <Ext className="link-btn" href={links.bscscanToken(launch.token)}>BscScan ↗</Ext>
-            <Ext className="link-btn" href={links.flap(launch.token)}>Flap ↗</Ext>
-            {launch.txHash ? <Ext className="link-btn" href={links.bscscanTx(launch.txHash)}>Launch tx ↗</Ext> : null}
-            {launch.meta ? <Ext className="link-btn" href={links.ipfs(launch.meta)}>Meta ↗</Ext> : null}
+            <Ext href={links.bscscanToken(launch.token)}>BscScan</Ext>
+            <Ext href={links.flap(launch.token)}>Flap</Ext>
+            {launch.txHash ? <Ext href={links.bscscanTx(launch.txHash)}>Tx</Ext> : null}
+            {launch.meta ? <Ext href={links.ipfs(launch.meta)}>Meta</Ext> : null}
           </>
         )}
         <span className="mono addr">{shortAddr(launch.token)}</span>
