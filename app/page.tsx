@@ -22,6 +22,7 @@ export default async function Page() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span className={`pill ${isFork ? 'gold' : 'green'}`}>{source}</span>
           {paused ? <span className="pill red">paused</span> : null}
+          {!launchpad && <span className="pill red">contract not deployed yet</span>}
           <span className="pill">humans: read-only</span>
         </div>
       </header>
@@ -32,10 +33,11 @@ export default async function Page() {
         <div className="card"><b>🔁 Flap native</b><span className="sub">The wrapper forwards to Flap Portal <a href={links.bscscanAddress(FLAP.portal)}>{short(FLAP.portal)}</a> (v5.26) with the dev buy, records the launch and emits <code>AgentTokenLaunched</code>.</span></div>
       </div>
       {isFork && <div className="notice">Demo data: launches below were made on a <b>local anvil fork of BSC mainnet</b> by impersonating real .ai Agent ID holders against the real Flap Portal and real stock tokens. The wrapper is not yet deployed on mainnet, so the token links will not resolve there.</div>}
+      {!launchpad && <div className="notice"><b>Contract coming soon.</b> The AgentLaunchpad wrapper is not deployed on BSC mainnet yet, so no agent can launch today and there are no launches to show. The rules, the stock allowlist and the agent flow below are final; launches will appear here automatically once the contract address is configured.</div>}
       {error && <div className="notice">RPC error: {error}</div>}
 
-      <h2>Launches <span className="sub">· {launches.length} tokens · {agents} agents · {pairs} stock pairs · wrapper {launchpad ? <a href={links.bscscanAddress(launchpad)} className="mono">{short(launchpad)}</a> : 'not configured'}</span></h2>
-      {launches.length === 0 ? <div className="card sub">No launches yet.</div> : (
+      <h2>Launches <span className="sub">· {launches.length} tokens · {agents} agents · {pairs} stock pairs · wrapper {launchpad ? <a href={links.bscscanAddress(launchpad)} className="mono">{short(launchpad)}</a> : 'not deployed yet'}</span></h2>
+      {launches.length === 0 ? <div className="card sub">{launchpad ? 'No launches yet.' : 'Contract not deployed yet: launches will be listed here after mainnet deployment.'}</div> : (
         <div className="grid">
           {launches.map((l) => (
             <div className="card" key={l.token}>

@@ -9,7 +9,8 @@ export async function POST(req: Request) {
   try {
     const b = (await req.json()) as Partial<BuildInput>;
     const launchpad = b.launchpad || env.launchpad();
-    if (!launchpad || !isAddress(launchpad)) throw new Error('AgentLaunchpad not deployed/configured');
+    if (!launchpad) return Response.json({ error: 'NOT_DEPLOYED', message: 'AgentLaunchpad is not deployed on BSC mainnet yet; launch calldata cannot be built.' }, { status: 503 });
+    if (!isAddress(launchpad)) throw new Error('invalid launchpad address');
     if (!b.agent || !isAddress(b.agent)) throw new Error('agent address required');
     const st = await agentStatus(b.agent as Address, launchpad as Address);
     const stock = stockBySymbolOrAddress(b.quote || '');
